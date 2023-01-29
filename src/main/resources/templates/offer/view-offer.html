@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Offer Details</title>
+    <th:block th:insert="fragment/head"/>
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <h4 class="page-title pt-1 lh-lg">Offer</h4>
+                    <div class="row">
+                        <div class="page-title-left col-8">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a th:href="@{/offers}">Offer</a></li>
+                                <li class="breadcrumb-item active">Offer Details</li>
+                            </ol>
+                        </div>
+                        <div class=" col-4" th:with="today=${#temporals.format(#temporals.createNow(), T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        createdDate=${#temporals.format(offerDisplayDto.createdDate, T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedDate=${#temporals.format(offerDisplayDto.lastModifiedDate, T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedBy=${offerDisplayDto.lastModifiedBy}">
+                            <div class="fst-italic fw-light">
+                                <div><span th:text="'Created on '
+                                            + (${today}==${createdDate} ? 'today' : ${createdDate})
+                                            + ', last updated by ' + *{lastModifiedBy} + ' ' + (${today}==${lastModifiedDate} ? 'today' : ${lastModifiedDate})"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Candidate <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.candidate.getFullName()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Department <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.department.getDisplayValue()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Recruiter owner <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.recruiterOwner.getFullName()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Position <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.position.getDisplayValue()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Approved by <span
+                                                class="text-danger">*</span></label>
+                                        </div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.approvedBy.getFullName()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Level <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.offerLevel.getDisplayValue()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Offer notes </label></div>
+                                        <div class="col-lg-8 d-inline note-view"><span style="white-space: pre-wrap"
+                                                                                       th:text="${#strings.isEmpty(offerDisplayDto.note)}==true?'N/A':*{note}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Contract type <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.contractType.getDisplayValue()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Interviewer </label></div>
+                                        <div class="col-lg-8 d-inline">
+                                            <span th:text="${offerDisplayDto.getInterviewSchedule()==null}?'N/A':${offerDisplayDto.getInterviewSchedule().title}"></span><br>
+                                            <button th:if="${interviewerList}"
+                                                    th:each="interviewer : ${interviewerList}"
+                                                    th:text="${interviewer.username}"
+                                                    class="border rounded-3 me-1 mt-1 d-inline-block px-2" disabled
+                                                    style="background-color:rgb(220, 215, 215); color: #000;"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Due date <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${#temporals.format(offerDisplayDto.getDueDate(), T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Interviewer notes </label></div>
+                                        <div class="col-lg-8 d-inline note-view">
+                                                <span style="white-space: pre-wrap"
+                                                      th:text="${offerDisplayDto.getInterviewSchedule()==null}?'N/A':${offerDisplayDto.getInterviewSchedule().note}"></span><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Contract start <span
+                                                class="text-danger">*</span> </label></div>
+                                        <div class="col-lg-8 d-inline">
+                                            <span class="small">From</span>
+                                            <span class="px-3"
+                                                  th:text="${#temporals.format(offerDisplayDto.getContractFrom(), T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                            <span class="col-lg-9 px-3 small">To
+                                                    </span>
+                                            <span th:text="${#temporals.format(offerDisplayDto.getContractTo(), T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Status <span
+                                                class="text-danger">*</span></label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${offerDisplayDto.offerStatus.getDisplayValue()}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3 row">
+                                        <div class="col-lg-3 d-inline"><label>Basic salary <span
+                                                class="text-danger">*</span> </label></div>
+                                        <div class="col-lg-8 d-inline"><span
+                                                th:text="${#strings.isEmpty(offerDisplayDto.basicSalary)}==true?'N/A':*{basicSalary}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center form-group mb-3">
+                                <a th:if="(!${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_INTERVIEWER')})
+                                                and (${offerDisplayDto.offerStatus != T(com.fa.ims.enums.OfferStatus).APPROVED_OFFER})
+                                                and (${offerDisplayDto.offerStatus != T(com.fa.ims.enums.OfferStatus).REJECTED_OFFER})"
+                                        th:href="@{/offers/edit/{id}(id=${offerDisplayDto.id})}"
+                                        class="btn btn-info btn-sm py-1 px-4 mr-3">Edit
+                                </a>
+                                <a th:if="${showButtonApprove==true}"
+                                   th:href="@{/offers/{id}/approve(id=${offerDisplayDto.id})}"
+                                   class="btn btn-info btn-sm py-1 px-3 mr-3">Approve</a>
+                                <a th:href="@{/offers}"
+                                   class="btn btn-secondary btn-sm py-1 px-3 ">Go Back</a>
+                            </div>
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<th:block th:insert="fragment/foot"/>
+</body>
+</html>

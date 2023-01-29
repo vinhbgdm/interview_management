@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.width-col-mc {
+    max-width: 200px;
+}
+
+.note-view {
+    max-height: 10rem;
+    overflow: auto;
+}
+
+.td-note {
+    max-height: 5rem;
+    overflow: auto;
+}
+
+.common-font-size-mc {
+    font-size: 0.95rem!important;
+}
+
+.hide-field-mc {
+    display: none;
+}
+
+.title-hover-mc:hover {
+    color: #79e8d0;
+    text-decoration: underline;
+    /*color: #79e8d0;*/
+}
+
+/*For label Error of JQuery Validate - TuTM9*/
+.error {
+    font-weight: lighter;
+    color: #f1556c;
+    font-size: 0.93rem;
+}

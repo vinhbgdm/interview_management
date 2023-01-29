@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>View Offer List</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+
+</head>
+
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-8">
+                        <div class="page-title-box">
+                            <h4 class="page-title pt-1 lh-lg">Offer</h4>
+                            <div class="page-title-left">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/offers}">Offer</a></li>
+                                    <li class="breadcrumb-item active">Offer List</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                TuTM9: INSERT message create fail in here -->
+                    <div class="col-4 d-flex flex-column justify-content-center">
+                        <div th:if="${messageSuccess}"
+                             class="alert alert-success alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="#{${messageSuccess}}"></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div th:if="${messageFail}"
+                             class="alert alert-danger alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="#{${messageFail}}"></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title">Offer List</h4>
+                                <div class="row">
+                                    <form th:action="@{/offers}" class="nav col-10 mb-2" method="get"
+                                          id="search-form">
+                                        <div class="border-1 w-100 row">
+                                            <div class="col-3 ms-2">
+                                                <div class="input-group">
+                                                    <input name="searchKey" type="text" class="form-control"
+                                                           id="search-box"
+                                                           th:value="${searchKey}" placeholder="Search...">
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <select id="department-search" name="department"
+                                                        class="custom-select h-100" data-toggle="select2">
+                                                    <option selected
+                                                            value="">Department
+                                                    </option>
+                                                    <th:block
+                                                            th:each="departmentEnum : ${T(com.fa.ims.enums.Department).values()}">
+                                                        <option th:text="${departmentEnum.getDisplayValue()}"
+                                                                th:value="${departmentEnum}"
+                                                                th:selected="${#strings.equalsIgnoreCase(departmentEnum,department)}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <!--status-->
+                                            <div class="col-3">
+                                                <select name="status" class="custom-select h-100" id="status-search"
+                                                        data-toggle="select2">
+                                                    <option selected value="">Status</option>
+                                                    <th:block
+                                                            th:each="statusEnum : ${T(com.fa.ims.enums.CandidateStatus).values()}">
+                                                        <option th:text="${statusEnum.getDisplayValue()}"
+                                                                th:value="${statusEnum}"
+                                                                th:selected="${#strings.equalsIgnoreCase(statusEnum,status)}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <button class="col-1 btn btn-info" id="search-button" type="submit">Search
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <div class="col-2 d-flex justify-content-center">
+                                        <!-- Button trigger modal  -->
+                                        <a th:if="!${contentPage.content.isEmpty()}" class="btn btn fas fa-upload"
+                                           style="font-size: 20px" id="tag-upload"
+                                           data-th-id="1"
+                                           th:attr="data-bs-target=${'#exampleModal'+'1'} "
+                                           type="button"
+                                           data-bs-toggle="modal"></a>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade bg-light.bg-gradient"
+                                             th:attr="id=${'exampleModal'+'1'}"
+                                             tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content bg-light.bg-gradient">
+                                                    <div class="text-center p-3">
+                                                        <h3 class="modal-title" id="exampleModalLabel">Export Offer</h3>
+                                                    </div>
+                                                    <div class="text-center p-3">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group mb-3">
+                                                                    <div class="row form-group mb-3 align-items-center">
+                                                                        <label class="col-lg-4">From</label>
+                                                                        <input type="text" id="from-date"
+                                                                               th:placeholder="${T(com.fa.ims.constant.CommonConstants).FORMAT_DATE}"
+                                                                               class="form-control col-lg-8">
+                                                                        <span id="from-date-error" class="text-danger"
+                                                                              style="display: none"
+                                                                              th:text="#{'message.003'}"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <div class="form-group mb-3">
+                                                                    <div class="row form-group mb-3 align-items-center">
+                                                                        <label class="col-lg-4">To</label>
+                                                                        <input type="text" id="to-date"
+                                                                               th:placeholder="${T(com.fa.ims.constant.CommonConstants).FORMAT_DATE}"
+                                                                               class="form-control col-lg-8">
+                                                                        <span id="to-date-error" class="text-danger"
+                                                                              style="display: none"
+                                                                              th:text="#{'message.0026'}"></span>
+                                                                        <span id="to-date-error-required"
+                                                                              class="text-danger" style="display: none"
+                                                                              th:text="#{'message.003'}"></span>
+
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pb-3 d-flex justify-content-center">
+                                                        <button th:attr="onclick=|exportFile()|"
+                                                                type="button" class="btn btn-info px-4 me-4">Export
+                                                        </button>
+                                                        <button type="button" class="btn btn-secondary px-4"
+                                                                data-bs-dismiss="modal" id="no-export">NO
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a th:if="!${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_INTERVIEWER')}"
+                                           th:href="@{/offers/create}" class="btn btn fas fa-plus-circle"
+                                           style="font-size: 20px"></a>
+                                    </div>
+                                </div>
+                                <div th:if="${approveDto}">
+                                <span class="h5"  th:text="'You have got ' + ${approveDto.total} + ' offer to take action. '"> </span>
+                                <a class="text-danger text-decoration-underline font-italic" th:href="@{/offers(action='approve')}">Check</a>
+
+                                </div>
+                                <!-- table -->
+                                <table class="table table-hover dt-responsive nowrap w-100 mt-3 ">
+                                    <thead>
+                                    <tr>
+                                        <th class="col-2">Candidate Name</th>
+                                        <th class="col-2">Email</th>
+                                        <th class="col-1">Approver</th>
+                                        <th class="col-2">Department</th>
+                                        <th class="col-2">Position</th>
+                                        <th class="col-2">Status</th>
+                                        <th class="col-1">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <tr th:each="offer : ${contentPage.content}">
+                                        <td class="col-2">
+                                            <a class="title-hover-mc" th:if="${param.action != null && #strings.equals(param.action, 'approve')}"
+                                               th:href="@{/offers/{id}/approve(id=${offer.id})}"
+                                               th:text="${offer.candidate.fullName}"></a>
+                                            <a class="title-hover-mc" th:if="${param.action == null || !#strings.equals(param.action, 'approve')}" th:href="@{/offers/{id}(id=${offer.id})}"
+                                               th:text="${offer.candidate.fullName}"></a>
+                                        </td>
+
+                                        <td class="col-2" th:text="${offer.candidate.email}"></td>
+                                        <td class="col-1" th:text="${offer.approvedBy.username}"></td>
+                                        <td class="col-2" th:text="${offer.department.displayValue}"></td>
+                                        <td class="col-2" th:text="${offer.position.displayValue}"></td>
+                                        <td class="col-2" th:text="${offer.offerStatus.displayValue}"></td>
+                                        <td class="col-1">
+
+                                            <a th:if="!${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_INTERVIEWER')}
+                                            and !(${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_RECRUITER')}
+                                            and ${#strings.equals(offer.offerStatus, 'APPROVED_OFFER')}) "
+
+                                               th:href="@{/offers/edit/{id}(id=${offer.id})}"
+                                               class="btn fas fa-edit p-1"></a>
+
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <h4 th:if="${contentPage.isEmpty()}" th:text="#{message.offer.empty.list}"
+                                    class="text-center"></h4>
+                                <th:block th:insert="fragment/pagination"/>
+
+                            </div>
+                            <!-- end card body-->
+                        </div> <!-- end card -->
+                    </div><!-- end col-->
+                </div>
+            </div> <!-- container -->
+        </div> <!-- content -->
+        <!-- end row-->
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+
+<th:block th:insert="fragment/foot"/>
+
+<script th:inline="javascript">
+
+    $(document).ready(function () {
+
+
+        $('#department-search, #status-search').select2({
+            minimumResultsForSearch: -1
+        });
+
+
+        let $select = $(".select-similar").selectize();
+
+        setTimeout(function () {
+            $(".message").fadeOut("slow");
+        }, 5000);
+
+        $("#from-date, #to-date").flatpickr({
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "d-m-Y"
+        });
+    });
+
+
+    function exportFile() {
+        let errorToDateInvalid = $('#to-date-error');
+        let errorFromDate = $('#from-date-error');
+        let errorToDateRequired = $('#to-date-error-required');
+        errorToDateInvalid.hide();
+        errorFromDate.hide();
+        errorToDateRequired.hide();
+
+        let fromDate = $('#from-date').val();
+        let toDate = $('#to-date').val();
+        let isValid = false;
+
+        let fromDateConvert = Date.parse(toValidDate(fromDate.toString()));
+        let toDateConvert = Date.parse(toValidDate(toDate.toString()));
+
+        if (fromDate === '') {
+            errorFromDate.show();
+            isValid = true;
+        }
+        if (toDate === '') {
+            errorToDateRequired.show();
+            isValid = true;
+        } else {
+            if (fromDateConvert >= toDateConvert) {
+                errorToDateInvalid.show();
+                isValid = true;
+            }
+        }
+
+        if (!isValid) {
+            location.href = `${CONTEXT_PATH}offers/export/${fromDate}_${toDate}`;
+            $('#no-export').trigger('click');
+        }
+    }
+
+    function toValidDate(dateString) {
+        return dateString.replace(/(\d{2})(-)(\d{2})/, "$3$2$1");
+    }
+
+
+</script>
+<script>
+
+</script>
+</body>
+
+</html>

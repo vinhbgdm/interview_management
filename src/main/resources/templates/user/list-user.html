@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List Users</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-8">
+                        <div class="page-title-box">
+                            <h4 class="page-title pt-1 lh-lg">User</h4>
+                            <div class="page-title-left">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/users}">User</a></li>
+                                    <li class="breadcrumb-item active">User List</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                TuTM9: INSERT message create fail in here -->
+                    <div class="col-4 d-flex flex-column justify-content-center">
+                        <div th:if="${messageSuccess}"
+                             class="alert alert-success alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="#{${messageSuccess}}"></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div th:if="${messageFail}"
+                             class="alert alert-danger alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="#{${messageFail}}"></span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div th:if="${param.delete}"
+                             th:classappend="${#strings.equals(param.delete, 'done')}? 'alert-success' : 'alert-danger'"
+                             class="alert alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="${#strings.equals(param.delete, 'done')}? #{'message.009'} : #{'message.010'}"></span>
+                            <button type="button" class="close" data-dismiss="alert"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="header-title">User list</h4>
+                                <div class="row">
+                                    <form th:action="@{/admin/users}" class="nav col-10 mb-2" method="get"
+                                          id="search-form">
+                                        <div class="border-1 w-100 row">
+                                            <div class="col-4 ms-2">
+                                                <div class="input-group">
+                                                    <input name="searchKey" type="text" class="form-control"
+                                                           id="search-box"
+                                                           th:value="${searchKey}" placeholder="Search...">
+                                                </div>
+                                            </div>
+                                            <!--status-->
+                                            <div class="col-3 ">
+                                                <select name="role" class="custom-select h-100" id="role-search"
+                                                        data-toggle="select2">
+                                                    <option selected value="">Role</option>
+                                                    <th:block
+                                                            th:each="roleEnum : ${T(com.fa.ims.enums.UserRole).values()}">
+                                                        <option th:text="${roleEnum.getDisplayValue()}"
+                                                                th:value="${roleEnum}"
+                                                                th:selected="${#strings.equalsIgnoreCase(roleEnum,role)}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <button class="col-1 btn btn-info" id="search-button" type="submit">Search
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <div class="col-2 d-flex justify-content-center">
+                                        <a th:href="@{/admin/users/create}"
+                                                class="btn btn fas fa-plus-circle"
+                                                style="font-size: 20px"></a>
+                                    </div>
+                                    <!-- table -->
+                                    <table class="table table-hover dt-responsive nowrap w-100 mt-3 ">
+                                        <thead>
+                                        <tr>
+                                            <th class="col-2">Name</th>
+                                            <th class="col-3">Email</th>
+                                            <th class="col-2">Phone No</th>
+                                            <th class="col-2">Role</th>
+                                            <th class="col-2">Status</th>
+                                            <th class="col-1">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="user : ${contentPage.content}">
+                                            <td class="col-2"><a class="title-hover-mc"
+                                                                 th:text="${user.username}"
+                                                                 th:href="@{/admin/users/{id}(id=${user.id})}"></a></td>
+                                            <td class="col-3" th:text="${user.email}"></td>
+                                            <td class="col-2" th:text="${user.phone}"></td>
+                                            <td class="col-2" th:text="${user.userRole.getDisplayValue()}"></td>
+                                            <td class="col-2" th:text="${user.userStatus.getDisplayValue()}"></td>
+                                            <td class="col-1">
+                                                <a th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                                        class="btn fas fa-edit p-1"></a>
+
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <h4 th:if="${contentPage.isEmpty()}" th:text="#{message.candidate.empty.list}"
+                                        class="text-center"></h4>
+                                    <th:block th:insert="fragment/pagination"/>
+
+                                </div>
+                                <!-- end card body-->
+                            </div> <!-- end card -->
+                        </div><!-- end col-->
+                    </div>
+                </div> <!-- container -->
+            </div> <!-- content -->
+            <!-- end row-->
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+</div>
+
+<th:block th:insert="fragment/foot"/>
+<script th:inline="javascript">
+
+    $(document).ready(function () {
+        $('#role-search').select2({
+            minimumResultsForSearch: -1
+        });
+
+        let $select = $(".select-similar").selectize();
+
+        setTimeout(function () {
+            $(".message").fadeOut("slow");
+        }, 6000)
+    });
+
+</script>
+
+</body>
+</html>

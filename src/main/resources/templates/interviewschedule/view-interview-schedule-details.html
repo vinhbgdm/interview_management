@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>View Interview Schedule Details</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <h4 class="page-title pt-1 lh-lg">Interview Schedule</h4>
+                    <div class="row">
+                        <div class="page-title-left col-8">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a th:href="@{/inteviews}">Interview Schedule
+                                    List</a></li>
+                                <li class="breadcrumb-item active">Interview Schedule Details</li>
+                            </ol>
+                        </div>
+                        <div class=" col-4" th:with="today=${#temporals.format(#temporals.createNow(),
+                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        createdDate=${#temporals.format(interviewDisplayDto.createdDate,
+                                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedDate=${#temporals.format(interviewDisplayDto.lastModifiedDate,
+                                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedBy=${interviewDisplayDto.lastModifiedBy}">
+                            <div class="fst-italic fw-light">
+                                <div><span th:text="'Created on '
+                                            + (${today}==${createdDate} ? 'today' : ${createdDate})
+                                            + ', last updated by ' + *{lastModifiedBy} + ' '
+                                            + (${today}==${lastModifiedDate} ? 'today' : ${lastModifiedDate})"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row"
+                     th:with="role = ${#strings.substring(
+                                       #authentication.getPrincipal().authorities, 1,
+                                       #strings.length(#authentication.getPrincipal().authorities)-1 )}">
+                    <div class="col-12">
+                        <div class="card">
+                            <form method="post" class="card-body"
+                                  th:action="@{${'/interviews/submit/' + interviewDisplayDto.id}}"
+                                  th:object="${interviewDisplayDto}" style="background-color: #fff">
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Schedule title <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{title}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Job Title <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{jobTitle}"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Candidate name <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{candidate.fullName}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Position <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{candidatePosition}"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Schedule <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline">
+                                                <span th:text="${#temporals.format(interviewDisplayDto.getScheduleTimeFrom(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                                <label class="px-3 text-muted small">From <span
+                                                        class="text-danger">*</span> </label>
+                                                <span th:text="${#temporals.format(interviewDisplayDto.getScheduleTimeFrom(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}"></span>
+                                                <label class="px-2 text-muted small">To <span
+                                                        class="text-danger">*</span> </label>
+                                                <span th:text="${#temporals.format(interviewDisplayDto.getScheduleTimeTo(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-lg-6 pl-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline">
+                                                <label>Interviewer <span
+                                                        class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline ">
+                                                <th:block th:each="str : *{interviewerSet}">
+                                                    <button th:text="${str.getUsername()}"
+                                                            class="border rounded-3 me-1 px-2 d-inline-block" disabled
+                                                            style="background-color:rgb(220, 215, 215); color: #000;">
+                                                    </button>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Location</label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{location}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Recruiter owner <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{recruiterOwner.username}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>CV Attachment </label></div>
+                                            <div class="col-lg-8 d-inline">
+                                                <span th:if="(${#strings.isEmpty(interviewDisplayDto.candidate.attachFile)})">N/A</span>
+                                                <a th:target="_blank"
+                                                   th:if="(!${#strings.isEmpty(interviewDisplayDto.candidate.attachFile)})"
+                                                   th:text="${#strings.arraySplit(interviewDisplayDto.candidate.attachFile, '/')[#arrays.length(#strings.arraySplit(interviewDisplayDto.candidate.attachFile, '/')) - 1]}"
+                                                   th:href="@{/files/{path}(path=${interviewDisplayDto.candidate.getAttachFile()})}"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4"
+                                         th:if="${ #strings.equals(role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}">
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label>Result</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <select th:field="*{interviewResult}" class="form-control select-similar">>
+                                                    <option value="" data-display="Select" th:text="'Select a result'">
+                                                    </option>
+                                                    <option th:each="result : ${T(com.fa.ims.enums.InterviewResult).values()}"
+                                                            th:value="${result}"
+                                                            th:selected="${result} == *{interviewResult}"
+                                                            th:text="${result.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4"
+                                         th:if="${!#strings.equals(role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Result</label></div>
+                                            <div class="col-lg-8 d-inline" th:if="${interviewDisplayDto.interviewResult}">
+                                                <span th:text="*{interviewResult.getDisplayValue()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 pr-4"
+                                         th:if="${ !#strings.equals(role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Notes</label></div>
+                                            <div class="col-lg-8 d-inline note-view"><span style="white-space: pre-wrap"
+                                                    th:text="*{note}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pr-4"
+                                         th:if="${ #strings.equals(role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}">
+                                        <div class="form-group row">
+                                            <div class="col-4">
+                                                <label for="note">Notes</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <textarea class="form-control" id="note" rows="5" placeholder=" "
+                                                          th:field="*{note}"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 pl-4">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Meeting ID</label></div>
+                                            <div class="col-lg-8 d-inline">
+                                                <a th:href="@{*{meetingId}}" th:target="_blank" th:text="*{meetingId}"
+                                                   style="text-decoration: underline"></a>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Status</label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{interviewStatus.displayValue}"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center form-group my-3">
+                                    <a th:if="${ !#strings.equals(
+                                                        role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}"
+                                       th:href="@{/interviews/edit/{id}(id=*{id})}"
+                                       class="btn btn-info btn-sm me-3 py-1 px-4">Edit
+                                    </a>
+                                    <button th:if="${#strings.equals(
+                                                    role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}"
+                                            type="submit"
+                                            class="btn btn-info btn-sm me-3 py-1 px-3">Submit
+                                    </button>
+                                    <a th:href="@{/interviews}"
+                                       class="btn btn-secondary btn-sm py-1 px-3">Go back</a>
+                                </div>
+                            </form> <!-- end card-body -->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<th:block th:insert="fragment/foot"/>
+<script>
+    $(document).ready(function () {
+        let $select = $(".select-similar").selectize();
+    })
+</script>
+</body>
+</html>

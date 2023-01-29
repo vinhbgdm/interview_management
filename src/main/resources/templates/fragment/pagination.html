@@ -1,0 +1,39 @@
+<div class="row">
+    <nav th:with="action=${#strings.equals(param.action,'approve')}?'approve':''" aria-label="Page navigation example"
+         class="col-11">
+        <ul class="pagination pagination-rounded justify-content-center mb-0 mt-0">
+            <li th:if="${contentPage.getNumber() > 0}" class="page-item">
+                <a class="page-link "
+                   th:href="@{''(page=${contentPage.getNumber() - 1},
+                                               size=${contentPage.getSize()},sort=${sort},
+                                               searchKey=${searchKey},status=${status},department=${department},role=${role},action=${action})}">&#171
+                </a>
+            </li>
+            <li th:if="${contentPage.hasContent()==true}"
+                th:each="currentPage: ${#numbers.sequence(1, contentPage.getTotalPages())}"
+                class="page-item">
+                <a class="page-link"
+                   th:classappend="${(currentPage == contentPage.getNumber()+1) ? 'bg-info text-white': ''}"
+
+                   th:href="@{''(page=${currentPage - 1},
+                                               size=${contentPage.getSize()},sort=${sort},
+                                               searchKey=${searchKey},status=${status},department=${department},role=${role},action=${action})}"
+                   th:text="${currentPage}">
+                </a>
+            </li>
+            <li th:if="${contentPage.getNumber() < contentPage.getTotalPages()-1}"
+                class="page-item">
+                <a class="page-link"
+                   th:href="@{''(page=${contentPage.getNumber() + 1},
+                                               size=${contentPage.getSize()},sort=${sort},searchKey=${searchKey},
+                                             status=${status},department=${department},role=${role},action=${action})}">&#187
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!--                                Display number of items-->
+    <span class="col-1 mt-1" style="font-size: 14px" th:text="${(contentPage.getNumber() != contentPage.getTotalPages()-1 ?
+          contentPage.getNumberOfElements()*(contentPage.getNumber()+1) :
+          (contentPage.getSize()*(contentPage.getNumber())+ contentPage.getNumberOfElements()) )
+                                    +'/' +contentPage.getTotalElements() +' rows'}"></span>
+</div>

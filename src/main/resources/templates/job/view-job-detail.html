@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>View Job Details</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <h4 class="page-title pt-1 lh-lg">Job</h4>
+                    <div class="row">
+                        <div class="page-title-left col-8">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a th:href="@{/jobs}">Job List</a></li>
+                                <li class="breadcrumb-item active">Job Details</li>
+                            </ol>
+                        </div>
+                        <div class=" col-4" th:with="today=${#temporals.format(#temporals.createNow(),
+                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        createdDate=${#temporals.format(jobDisplayDto.createdDate,
+                                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedDate=${#temporals.format(jobDisplayDto.lastModifiedDate,
+                                        T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedBy=${jobDisplayDto.lastModifiedBy}">
+                            <div class="fst-italic fw-light">
+                                <div><span th:text="'Created on '
+                                            + (${today}==${createdDate} ? 'today' : ${createdDate})
+                                            + ', last updated by ' + *{lastModifiedBy} + ' '
+                                            + (${today}==${lastModifiedDate} ? 'today' : ${lastModifiedDate})"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <form class="card-body" >
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Job Title <span
+                                                    class="text-danger">*</span> </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${jobDisplayDto.jobTitle}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Skills <span
+                                                    class="text-danger">*</span> </label></div>
+                                            <div class="col-lg-8 d-inline ">
+                                                <th:block th:each="str : ${jobDisplayDto.getRequiredSkillSet()}">
+                                                    <button th:text="${str}"
+                                                            class="border rounded-3 me-1 px-2 d-inline-block" disabled
+                                                            style="background-color:rgb(220, 215, 215); color: #000;">
+                                                        skills
+                                                    </button>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Start Date <span
+                                                    class="text-danger">*</span> </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${jobDisplayDto.getStartDate()}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>End Date <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${jobDisplayDto.getEndDate()}"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Salary Range </label>
+                                            </div>
+                                            <div class="col-lg-8 d-inline">
+                                                <span class="small">From</span>
+                                                <span class="px-3" th:text="${jobDisplayDto.getSalaryFrom()}"></span>
+                                                <span class="col-lg-9 px-3 small">To
+                                                    <span class="text-danger">*</span>
+                                                    </span>
+                                                <span th:text="${jobDisplayDto.getSalaryTo()}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Benefits <span
+                                                    class="text-danger">*</span> </label></div>
+                                            <div class="col-lg-8 d-inline ">
+                                                <th:block th:each="str : ${jobDisplayDto.getJobBenefitSet()}">
+                                                    <button th:text="${str}"
+                                                            class="border rounded-3 me-1 px-2 d-inline-block" disabled
+                                                            style="background-color:rgb(220, 215, 215); color: #000;">
+                                                        benefits
+                                                    </button>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Working Address</label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${jobDisplayDto.getWorkingAddress()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Status </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${jobDisplayDto.getJobStatus().getDisplayValue()}">
+                                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Description</label></div>
+                                            <div class="col-lg-8 d-inline note-view"><span style="white-space: pre-wrap"
+                                                    th:text="${jobDisplayDto.getDescription()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center form-group mb-3 common-font-size-mc"
+                                        th:with="role = ${#strings.substring(
+                                        #authentication.getPrincipal().authorities, 1,
+                                        #strings.length(#authentication.getPrincipal().authorities)-1 )}">
+                                    <a th:if="${ !#strings.equals(
+                                                        role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}"
+                                            th:href="@{/jobs/edit/{id}(id=${jobDisplayDto.id})}"
+                                            class="btn btn-info btn-sm me-3 py-1 px-4">Edit
+                                    </a>
+                                    <a th:href="@{/jobs}"
+                                       class="btn btn-secondary btn-sm py-1 px-3">Go back</a>
+                                </div>
+                            </form> <!-- end card-body -->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+
+<th:block th:insert="fragment/foot"/>
+
+<script>
+    $(document).ready(function () {
+        $('.js-example-basic-multiple').select2({
+                maximumSelectionLength: 6
+            }
+        );
+    });
+</script>
+
+</body>
+</html>

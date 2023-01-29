@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Email</title>
+  <style>
+    *{
+      font-size: 15px;
+      color: #0a0a0a;
+    }
+  </style>
+</head>
+<body>
+<p>Your account has been created. Please use the following credential to login:</p>
+<p>
+  <span><b>User name: </b></span>
+  <span th:text="${emailSendUserDto.username}"></span>
+</p>
+<p>
+  <span><b>Password: </b></span>
+  <span th:text="${emailSendUserDto.password}"></span>
+</p>
+<p>
+  <span><b>Email: </b></span>
+  <span th:text="${emailSendUserDto.email}"></span>
+</p>
+<p>
+   We are so sorry for this inconvenience.
+</p>
+<p>
+  We look forward to meeting you soon.<br>
+  Yours sincerely,
+</p>
+<p>
+  --------<br>
+  <b><i>Thanks & Regards! </i></b><br>
+  <b>IMS Team</b>
+</p>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>IMS Login</title>
+    <th:block th:insert="fragment/head"/>
+    <style>
+        .error {
+            color: red;
+            margin-bottom: 0;
+            margin-top: 0.2rem;
+        }
+    </style>
+</head>
+<body class="loading authentication-bg-pattern">
+<div class="account-pages">
+    <div class="container">
+        <div class="row justify-content-center align-items-center vh-100">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div class="card">
+
+                    <div class="card-body p-4 shadow">
+                        <div class="text-center w-75 m-auto">
+                            <div class="auth-logo">
+                                <!--                                <img th:src="@{assets/images/logo-IMS.png}" alt="">-->
+                                <h1 class="">IMS Recruitment</h1>
+                            </div>
+                        </div>
+
+
+                        <form id="login-form" th:action="@{/authentication}" th:object="${userLoginDto}" method="post">
+                            <th:block th:if="${messageResetPassword}">
+                                <div class="alert alert-success message" id="success-alert-job" role="alert"
+                                     th:text="#{${messageResetPassword}}">
+                                </div>
+                            </th:block>
+                            <div class="form-group">
+                                <label>User Name</label>
+                                <input class="form-control" th:field="*{username}" type="text"
+                                       placeholder="Enter your username">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" th:field="*{password}" class="form-control"
+                                       placeholder="Enter your password">
+                            </div>
+                            <div class="form-group d-flex justify-content-between">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="remember-me" class="custom-control-input"
+                                           id="checkbox-signup">
+                                    <label class="custom-control-label" for="checkbox-signup">Remember me?</label>
+                                </div>
+                                <a th:href="@{/forgot-password}" class="text" style="text-decoration: underline">Forgot Password?</a>
+                            </div>
+
+                            <div th:if="${param.error}">
+                                <div class="alert alert-danger p-2" th:text="#{'message.002'}">
+                                </div>
+                            </div>
+
+                            <div th:if="${param.logout}">
+                                <div class="alert alert-success p-2">
+                                    You have been logged out.
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-info btn-block" type="submit"> Login</button>
+                            </div>
+
+                        </form>
+                    </div> <!-- end card-body -->
+                </div>
+
+            </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+<!-- end page -->
+<!-- Vendor js -->
+<th:block th:insert="fragment/foot"/>
+
+<script th:inline="javascript">
+    $(function () {
+        const message = /*[[#{${'message.003'}}]]*/ '';
+        $('#login-form').validate({
+            rules: {
+                'username': {
+                    required: true
+                },
+                'password': {
+                    required: true
+                }
+            },
+            messages: {
+                'username': {
+                    requires: message,
+                },
+                'password': {
+                    requires: message,
+                }
+            }
+        })
+    })
+</script>
+
+
+<!--<script th:src="@{/assets/js/vendor.min.js}"></script>-->
+<!--<script th:src="@{/assets/js/jquery-3.6.1.min.js}"></script>-->
+
+<!--&lt;!&ndash; App js &ndash;&gt;-->
+<!--<script th:src="@{/assets/js/app.min.js}"></script>-->
+</body>
+</html>

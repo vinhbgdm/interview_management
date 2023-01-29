@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <title> IMS Project - HN22-FJB01</title>
+    <th:block th:insert="fragment/head"/>
+</head>
+
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- Topbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- end Topbar -->
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page pb-0">
+        <div class="content">
+            <div class="container-fluid d-flex justify-content-center">
+                <img style="width: 100%; object-fit: cover; margin-top: 1rem" th:src="@{/image/cover-img.jpg}" alt="cover-img">
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+
+
+<th:block th:insert="fragment/foot"/>
+<!-- Vendor js -->
+<script th:src="@{/assets/js/pages/project-details.init.js}"></script>
+<!-- Chart JS -->
+<script th:src="@{/assets/libs/chart.js/Chart.bundle.min.js}"></script>
+
+</body>
+
+</html>

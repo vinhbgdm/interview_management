@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Interview Schedule</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/assets/libs/flatpickr/flatpickr.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-8">
+                        <div class="page-title-box">
+                            <h4 class="page-title pt-1 lh-lg">Interview Schedule</h4>
+                            <div class="page-title-left">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/interviews}">Interview Schedule List</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">New Interview Schedule</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-2" style="background-color: #fff;">
+                            <div class="card-body">
+                                <form method="post" id="create-schedule-form"
+                                      th:action="@{${interviewScheduleParamDto.id == null ? '/interviews/create' : '/interviews/edit/' + interviewScheduleParamDto.id}}"
+                                      th:object="${interviewScheduleParamDto}">
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label for="title">Schedule Title <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" id="title" name="title" class="form-control"
+                                                       th:field="*{title}" placeholder="Type a title...">
+                                                <span class="text-danger" th:errors="*{title}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label>Job Title <span class="text-danger">*</span></label>
+                                                <br/>
+                                                <select id="jobId" name="jobId" th:field="*{job}"
+                                                        class="form-control"
+                                                        data-toggle="select2">
+                                                    <option value=""></option>
+                                                    <option th:each="job : ${jobDisplayDtoList}"
+                                                            th:value="${job.id}"
+                                                            th:text="${job.jobTitle}"></option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{job}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label>Candidate name <span class="text-danger">*</span></label>
+                                                <select class="form-control" id="candidateId"
+                                                        data-placeholder="Choose ..."
+                                                        th:attr="onchange=|assignPosition(${interviewScheduleParamDto.candidateId})|"
+                                                        th:field="*{candidateId}">
+                                                    <option value="" data-display="Select"
+                                                            th:text="'Select candidate name'">
+                                                    </option>
+                                                    <option th:each="candidate : ${candidateDisplayInterviewDto}"
+                                                            th:value="${candidate.id}"
+                                                            th:text="${candidate.fullName}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{candidateId}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label>Position <span class="text-danger">*</span></label>
+                                                <br/>
+                                                <select id="position" name="position" th:field="*{position}"
+                                                        class="form-control"
+                                                        data-toggle="select2">
+                                                    <option value=""></option>
+                                                    <option th:each="pos : ${T(com.fa.ims.enums.CandidatePosition).values()}"
+                                                            th:value="${pos}"
+                                                            th:text="${pos.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{position}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-lg-6 d-flex justify-content-between p-0">
+                                            <div class="form-group col-6 ml-0">
+                                                <label>Schedule Date <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" id="schedule-date" value="" class="form-control"
+                                                       placeholder="Type schedule date..." th:field="*{displayDate}">
+                                                <span class="text-danger" th:errors="*{displayDate}"></span>
+                                            </div>
+                                            <div class="form-group col-3">
+                                                <label>From <span class="text-danger">*</span></label>
+                                                <input type="text" id="schedule-from" value="" class="form-control"
+                                                       th:field="*{scheduleTimeFrom}" placeholder="Time from">
+                                                <span class="text-danger" th:errors="*{scheduleTimeFrom}"></span>
+                                            </div>
+                                            <div class="form-group col-3 mr-0">
+                                                <label>To <span class="text-danger">*</span></label>
+                                                <input type="text" id="schedule-to" value="" class="form-control"
+                                                       th:field="*{scheduleTimeTo}" placeholder="Time to">
+                                                <span class="text-danger" th:errors="*{scheduleTimeTo}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label>Interviewers <span class="text-danger">*</span></label>
+                                                <select class="form-control js-example-basic-multiple"
+                                                        id="interviewers" name="interviewers"
+                                                        data-toggle="select2"
+                                                        multiple="multiple"
+                                                        data-placeholder="Choose ..."
+                                                        th:field="*{interviewerId}">
+                                                    <option th:each="interviewer : ${interviewerDisplayDto}"
+                                                            th:value="${interviewer.id}"
+                                                            th:text="${interviewer.username}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{interviewerId}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label for="location">Location <span class="text-danger">*</span></label>
+                                                <input type="text" id="location" name="location" class="form-control"
+                                                       th:field="*{location}" placeholder="Type a title...">
+                                                <span class="text-danger" th:errors="*{location}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-2">
+                                                <label>Recruiter <span class="text-danger">*</span></label>
+                                                <br/>
+                                                <select id="recruiterId" name="recruiter" th:field="*{recruiterOwnerId}"
+                                                        class="form-control"
+                                                        data-toggle="select2">
+                                                    <option value="">Choose Recruiter to assign</option>
+                                                    <option th:each="recruiter : ${recruiterDisplayDto}"
+                                                            th:value="${recruiter.getId()}"
+                                                            th:text="${recruiter.fullName} + ' - ' + ${recruiter.getUsername()}"></option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{recruiterOwnerId}"></span>
+                                            </div>
+                                            <th:block th:each="recruiter : ${recruiterDisplayDto}">
+                                                <a th:if="${recruiter.username}==${#authentication.getPrincipal().getUsername()}"
+                                                   href="javascript:void(0)"
+                                                   th:attr="onclick=|assignMe(${recruiter.id})|"
+                                                   class="text-primary ml-0" style="text-decoration: underline">Assign
+                                                    me</a>
+                                            </th:block>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-3">
+                                                <label for="note">Note</label>
+                                                <textarea class="form-control" id="note" rows="5"
+                                                          th:field="*{note}"
+                                                          placeholder="Type a schedule note..."></textarea>
+                                                <p><span class="text-danger" th:errors="*{note}"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input class="form-control" type="hidden"
+                                                   th:field="*{interviewResult}">
+                                            <div class="form-group mb-2"
+                                                 th:classappend="${(interviewScheduleParamDto.id != null) ? '' : 'hide-field-mc'}">
+                                                <label>Status <span class="text-danger">*</span></label>
+                                                <select class="form-control" name=""
+                                                        data-placeholder="Choose ..."
+                                                        th:field="*{interviewStatus}">
+                                                    <option th:each="status : ${T(com.fa.ims.enums.InterviewScheduleStatus).values()}"
+                                                            th:value="${status.name()}"
+                                                            th:text="${status.getDisplayValue()}">
+                                                </select>
+                                                <span class="text-danger" th:errors="*{interviewStatus}"></span>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label for="meeting-id">Meeting ID </label>
+                                                <input type="text" id="meeting-id" name="meeting-id"
+                                                       class="form-control"
+                                                       th:field="*{meetingId}" placeholder="Type a meeting ID...">
+                                                <span class="text-danger" th:errors="*{meetingId}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center form-group my-3">
+                                        <div class="text-center form-group mb-3">
+                                            <button type="submit" class="btn btn-info btn-sm mr-3 py-1 px-3">Submit
+                                            </button>
+                                            <a th:href="@{/interviews}"
+                                               class="btn btn-secondary btn-sm py-1 px-3">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+
+<th:block th:insert="fragment/foot"/>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        //Auto change Recruiter when user select Candidate
+        let $candidate = $('#candidateId').selectize({
+            onChange: function (value) {
+                $.ajax({
+                    method: 'GET',
+                    url: `${CONTEXT_PATH}api/candidates/` + value + `/recruiter`,
+                    beforeSend(request) {
+                        request.setRequestHeader(header, token);
+                    }
+                }).done(function (content) {
+                    let opt = $('#recruiterId').children("option[value=" + content.id + "]");
+                    opt.attr('selected', 'selected');
+                    $('#select2-recruiterId-container').text(opt.text());
+                }).fail(function () {
+                });
+
+                $.ajax({
+                    method: 'GET',
+                    url: `${CONTEXT_PATH}api/candidates/` + value + `/position`,
+                    beforeSend(request) {
+                        request.setRequestHeader(header, token);
+                    }
+                }).done(function (content) {
+                    let opt = $('#position').children("option[value=" + content.candidatePosition + "]");
+                    opt.attr('selected', 'selected');
+                    $('#select2-position-container').text(opt.text());
+                }).fail(function () {
+                });
+            }
+        });
+
+        //Multiple select Interviewer
+        $(function () {
+            $('.js-example-basic-multiple').select2({
+                    maximumSelectionLength: 4,
+                    allowClear: true,
+                    closeOnSelect: false,
+                    multiple: true,
+                }
+            );
+
+            $('#jobId, #position').select2({
+                placeholder: "Choose..."
+            });
+
+        })
+
+        //Display message error
+        $(function () {
+            $("#failed-alert-job").delay(8000).slideUp(200, function () {
+                $(this).alert('close');
+            });
+        })
+    })
+</script>
+<script>
+    //Assign recruiter
+    function assignMe(id) {
+        let opt = $('#recruiterId').children("option[value=" + id + "]");
+        opt.attr('selected', 'selected');
+        $('#select2-recruiterId-container').text(opt.text());
+    }
+</script>
+
+<script>
+    //Format display Schedule Time From and Schedule Time To
+    $(document).ready(function () {
+
+        $("#schedule-from, #schedule-to").flatpickr({
+            altInput: true,
+            altFormat: 'H:i',
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "d-m-Y H:i",
+            time_24hr: true
+        })
+
+        $('#schedule-date').flatpickr({
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "d-m-Y",
+            minDate: "today"
+        })
+
+        let $select = $(".select-similar").selectize();
+    })
+</script>
+</body>
+
+</html>

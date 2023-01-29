@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Job</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+    <!-- Begin page -->
+    <div id="wrapper">
+        <!-- TopNavbar Start -->
+        <th:block th:insert="fragment/top-navbar"/>
+        <!-- TopNavbar End-->
+
+        <!-- Left Sidebar Start -->
+        <th:block th:insert="fragment/sidebar"/>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <div class="content common-font-size-mc">
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="page-title-box">
+                                <h4 class="page-title pt-1 lh-lg">Job</h4>
+                                <div class="page-title-left">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a th:href="@{/jobs}">Job List</a></li>
+                                        <li class="breadcrumb-item active">Create Job</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 d-flex flex-column justify-content-center">
+                            <th:block th:if="${messageFail}">
+                                <div class="alert alert-danger" id="failed-alert-job" role="alert" th:text="#{${messageFail}}">
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-2" style="background-color: #fff;">
+                                <div class="card-body">
+                                    <form method="post" id="create-job"
+                                          th:action="@{${jobParamDto.id == null ? '/jobs/create' : '/jobs/edit/' + jobParamDto.id}}"
+                                          th:object="${jobParamDto}">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-2">
+                                                    <label for="job-title">Job Title <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" id="job-title" class="form-control"
+                                                           th:field="*{jobTitle}">
+                                                    <span class="text-danger" th:errors="*{jobTitle}"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-2">
+                                                    <label>Skills <span class="text-danger">*</span></label>
+                                                    <select class="form-control js-example-basic-multiple"
+                                                            id="skill-list"
+                                                            data-toggle="select2"
+                                                            multiple="multiple"
+                                                            data-placeholder="Choose ..."
+                                                            th:field="*{skillIdList}">
+                                                        <option th:each="skillId : ${skillDisplayDtoList}"
+                                                                th:value="${skillId.id}"
+                                                                th:text="${skillId.skillName}">
+                                                        </option>
+                                                    </select>
+                                                    <span class="text-danger" th:errors="*{skillIdList}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-6 ml-0">
+                                                <label>Start Date <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" id="start-date" class="form-control"
+                                                       th:field="*{startDate}" placeholder="Type start date...">
+                                                <span class="text-danger" th:errors="*{startDate}"></span>
+                                            </div>
+                                            <div class="form-group col-6 ml-0">
+                                                <label>End Date <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="text" id="end-date" class="form-control"
+                                                       th:field="*{endDate}" placeholder="Type end date...">
+                                                <span class="text-danger" th:errors="*{endDate}"></span>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-2">
+                                                    <label>Salary Range</label>
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="col-6 ps-1">
+                                                            <input type="text" class="form-control" th:field="*{salaryFrom}"
+                                                                   value=""
+                                                                   placeholder="From">
+                                                            <span class="text-danger" th:errors="*{salaryFrom}"></span>
+                                                        </div>
+                                                        <div class="col-6 pe-1">
+                                                            <input type="text" class="form-control" th:field="*{salaryTo}"
+                                                                   value=""
+                                                                   placeholder="To (*)">
+                                                            <span class="text-danger" th:errors="*{salaryTo}"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-2">
+                                                    <label>Benefits <span class="text-danger">*</span></label>
+                                                    <select class="form-control select2-multiple js-example-basic-multiple"
+                                                            data-toggle="select2" multiple="multiple"
+                                                            data-placeholder="Choose ..." th:field="*{benefitIdList}">
+                                                        <option th:each="benefitId : ${benefitDisplayDtoList}"
+                                                                th:value="${benefitId.id}"
+                                                                th:text="${benefitId.benefit}">
+                                                        </option>
+                                                    </select>
+                                                    <span class="text-danger" th:errors="*{benefitIdList}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-2">
+                                                    <label for="working-address">Working Address</label>
+                                                    <input type="text" id="working-address" class="form-control"
+                                                           th:field="*{workingAddress}">
+                                                    <span class="text-danger" th:errors="*{workingAddress}"></span>
+                                                </div>
+                                            </div>
+                                            <!--                                                Create form-->
+                                            <div class="col-lg-6" th:classappend="${(jobParamDto.id == null) ? '' : 'hide-field-mc'} ">
+                                                <div class="form-group mb-2" >
+                                                    <label>Job Level <span class="text-danger">*</span></label>
+                                                    <select class="form-control select2-multiple js-example-basic-multiple"
+                                                            data-toggle="select2" multiple="multiple"
+                                                            data-placeholder="Choose ..." th:field="*{jobLevel}">
+                                                        <option th:each="level : ${T(com.fa.ims.enums.JobLevel).values()}"
+                                                                th:value="${level.name()}"
+                                                                th:text="${#strings.capitalize(#strings.toLowerCase(level.name()))}">
+                                                        </option>
+                                                    </select>
+                                                    <span class="text-danger" th:errors="*{jobLevel}"></span>
+                                                </div>
+                                            </div>
+                                            <!-- data-toggle="select2" multiple="multiple" Edit form-->
+                                            <div class="col-lg-6" th:if="${jobParamDto.id != null}">
+                                                <div class="form-group mb-2">
+                                                    <label>Job Status <span class="text-danger">*</span></label>
+                                                    <select class="form-control select2-multiple js-example-basic-multiple"
+
+                                                            data-placeholder="Choose ..." th:field="*{jobStatus}">
+                                                        <option th:each="status : ${T(com.fa.ims.enums.JobStatus).values()}"
+                                                                th:value="${status.name()}"
+                                                                th:text="${status.getDisplayValue()}">
+                                                        </option>
+                                                    </select>
+                                                    <span class="text-danger" th:errors="*{jobStatus}"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="description">Description</label>
+                                                    <textarea class="form-control" id="description" rows="5"
+                                                              th:field="*{description}"></textarea>
+                                                    <p><span class="text-danger" th:errors="*{description}"></span></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center form-group my-3">
+                                            <div class="text-center form-group mb-3">
+                                                <button type="submit" class="btn btn-info btn-sm mr-3 py-1 px-3">Submit
+                                                </button>
+                                                <a th:href="@{/jobs}"
+                                                   class="btn btn-secondary btn-sm py-1 px-3" >Cancel</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+    <th:block th:insert="fragment/foot"/>
+    <script>
+        $(document).ready(function () {
+            $('#create-job').validate({
+                rules: {
+                    "jobTitle" : "required",
+                    "skillIdList" : "required",
+                    "startDate" : "required",
+                    "endDate" : "required",
+                    "salaryTo" : "required",
+                    "benefitIdList" : "required",
+                    "jobLevel" : "required",
+                },
+                messages: {
+                    "jobTitle" : "Required field",
+                    "skillIdList" : "Required field",
+                    "startDate" : "Required field",
+                    "endDate" : "Required field",
+                    "salaryTo" : "Required field",
+                    "benefitIdList" : "Required field",
+                    "jobLevel" : "Required field",
+                },
+                errorPlacement: function(error, element) {
+                    if (element.attr("name") === ("skillIdList")) {
+                        error.insertAfter($("#skill-list").next());
+                    } else if (element.attr("name") === ("benefitIdList")) {
+                        error.insertAfter($("#benefitIdList").next());
+                    } else if (element.attr("name") === ("jobLevel")) {
+                        error.insertAfter($("#jobLevel").next());
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#start-date, #end-date").flatpickr({
+                dateFormat: "d-m-Y",
+                minDate: "today"
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(function () {
+                $('.js-example-basic-multiple').select2({
+                        maximumSelectionLength: 6,
+                        allowClear: true,
+                        closeOnSelect: false,
+                    }
+                );
+            })
+
+            $(function() {
+                $("#failed-alert-job").delay(8000).slideUp(200, function() {
+                    $(this).alert('close');
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>

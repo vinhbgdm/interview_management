@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>EM-02</title>
+</head>
+<style>
+    * {
+        font-size: 15px;
+        color: #0a0a0a;
+    }
+</style>
+<body>
+<h4 th:with="gender=${#strings.equals(offerReminderDto.gender,'MALE') ? 'Mr. ' : (#strings.equals(offerReminderDto.gender,'FEMALE') ? 'Ms. ' : 'Mr/Ms. ')}" th:text="'Dear ' + ${gender} + ${offerReminderDto.fullName} + ','"></h4>
+<p>You have <span style="color: red"><b th:text="${offerReminderDto.total}"> </b></span> offer to take action  before due date is reached,
+
+</p>
+<p>
+    Please refer this link to take action
+    <a style="text-decoration: auto" th:href="${contextPath} + '/offers?action=approve'" th:text="${contextPath} + '/offers?action=approve'"></a>
+</p>
+
+<p>
+    --------------<br>
+    <b><i>Thanks & Regards!,</i></b><br>
+    IMS Team.<br>
+    <b>IMS Software</b>
+</p>
+</body>
+</html>

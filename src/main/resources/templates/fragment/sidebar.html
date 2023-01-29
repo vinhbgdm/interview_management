@@ -1,0 +1,46 @@
+<div class="left-side-menu" style="background: #fff">
+    <div class="h-100" data-simplebar>
+        <div id="sidebar-menu">
+            <ul id="side-menu">
+                <li>
+                    <a th:href="@{/home-page}">
+                        <i class="bi bi-house"></i>
+                        <span class="badge badge-blue float-right"></span>
+                        <span class="font-15"> Home Page </span>
+                    </a>
+                </li>
+                <li class="menu-title my-2">Management</li>
+                <li>
+                    <a th:href="@{/candidates}">
+                        <i class="bi bi-people"></i>
+                        <span class="font-15"> Candidate </span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/jobs}">
+                        <i class="bi bi-briefcase"></i>
+                        <span class="font-15"> Job </span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/interviews}">
+                        <i class="bi bi-chat-square-text"></i>
+                        <span class="font-15"> Interview </span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/offers}">
+                        <i class="bi bi-journal-text"></i>
+                        <span class="font-15"> Offer </span>
+                    </a>
+                </li>
+                <li th:if="${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_ADMIN')}">
+                    <a th:href="@{/admin/users}">
+                        <i class="fe-user"></i>
+                        <span class="font-15"> User </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

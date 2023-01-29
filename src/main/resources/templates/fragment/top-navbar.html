@@ -1,0 +1,79 @@
+<div class="navbar-custom" style="background: #39434c;">
+    <div class="container-fluid">
+
+        <!-- MENU RIGHT + USER PROFILE -->
+        <ul class="list-unstyled topnav-menu float-right mb-0">
+            <!-- USER PROFILE -->
+            <li style="color: rgba(255,255,255,.6)" class="m-1 me-3">
+                <p class="text-right m-0 mt-2 pb-1 lh-1">
+                    <span id="user-username" th:text="${#authentication.getPrincipal().getUsername()}"></span>
+                </p>
+                <p class="text-center m-0">
+                    <span id="user-department"></span>
+                </p>
+            </li>
+            <li class="dropdown notification-list topbar-dropdown">
+                <a class="nav-link dropdown-toggle nav-user mr-0 waves-light" data-toggle="dropdown" href="#"
+                   role="button" aria-haspopup="false" aria-expanded="false">
+                    <img th:src="@{/assets/images/users/user-1.jpg}" alt="user-image" class="rounded-circle">
+                    <span class="pro-user-name ml-1">
+                            </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-user"></i>
+                        <span>User management</span>
+                    </a>
+
+                    <!-- item-->
+                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                        <i class="fe-settings"></i>
+                        <span>My account</span>
+                    </a>
+
+                    <div class="dropdown-divider"></div>
+
+                    <!-- item-->
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="dropdown-item notify-item">
+                            <i class="fe-log-out"></i>
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+
+        <!-- LOGO -->
+        <div class="logo-box">
+            <a th:href="@{/home-page}" class="logo logo-light text-center">
+                        <span class="logo-lg">
+                            <img src="/image/logo-v2.png" class="pb-1" alt="logo" height="65">
+                        </span>
+            </a>
+        </div>
+
+        <!-- MENU LEFT -->
+        <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
+            <li>
+                <button class="button-menu-mobile waves-effect waves-light">
+                    <i class="fe-menu"></i>
+                </button>
+            </li>
+
+            <li>
+                <!-- Mobile menu toggle (Horizontal Layout)-->
+                <a class="navbar-toggle nav-link" data-toggle="collapse" data-target="#topnav-menu-content">
+                    <div class="lines">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+                <!-- End mobile menu toggle-->
+            </li>
+        </ul>
+    </div>
+</div>
+

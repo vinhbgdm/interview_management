@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Email</title>
+    <style>
+      *{
+        font-size: 15px;
+        color: #0a0a0a;
+      }
+    </style>
+</head>
+<body>
+  <h3 th:text="'Dear Mr/Ms. ' + ${interviewScheduleDisplayDto.candidate.fullName} + ','"></h3>
+  <p>First of all, thank you for your interest in working with IMS Software.
+    We are impressed with your resume and delighted to invite you to our interview.
+  </p>
+  <p>
+    The Interview detail is as follows:
+  </p>
+  <p>
+    <span><b>- Applied position: </b></span>
+    <span th:text="${interviewScheduleDisplayDto.candidate.candidatePosition.displayValue}"></span>
+  </p>
+  <p>
+    <span><b>- Time: </b></span>
+    <span th:text="${#temporals.format(interviewScheduleDisplayDto.getScheduleTimeFrom(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}
+              + ' - '  + ${#temporals.format(interviewScheduleDisplayDto.getScheduleTimeTo(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}"></span>
+  </p>
+  <p>
+    <span><b>- Date: </b></span>
+    <span th:text="${#temporals.format(interviewScheduleDisplayDto.getScheduleTimeFrom(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+  </p>
+  <p>
+    <span><b>- Venue: </b></span>
+    <span th:text="${interviewScheduleDisplayDto.location}"></span>
+  </p>
+  <th:block th:if="${!#strings.isEmpty(interviewScheduleDisplayDto.meetingId)}">
+    <p>
+      <span><b>- Meeting ID: </b></span>
+      <a th:href="@{${interviewScheduleDisplayDto.meetingId}}"
+         th:text="${interviewScheduleDisplayDto.meetingId}"></a>
+    </p>
+  </th:block>
+  <p>
+    <span><b>- Contact point: </b></span>
+    <span th:text="${interviewScheduleDisplayDto.recruiterOwner.email}"></span>
+  </p>
+  <p>
+    Please confirm your attendance and feel free to contact us through mail/phone if any query.<br>
+    For detailed information about the company please click here.<br>
+    We look forward to meeting you soon.<br>
+    Yours sincerely,
+  </p>
+  <p>
+    -----<br>
+    <b><i>Thanks and best regards,</i></b><br>
+    Recruitment Team<br>
+    <b>IMS Software</b>
+  </p>
+</body>
+</html>

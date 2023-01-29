@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Candidate Details</title>
+    <th:block th:insert="fragment/head"/>
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <h4 class="page-title pt-1 lh-lg">Candidate</h4>
+                    <div class="row">
+                        <div class="page-title-left col-8">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a th:href="@{/candidates}">Candidate</a></li>
+                                <li class="breadcrumb-item active">Candidate Details</li>
+                            </ol>
+                        </div>
+                        <div class=" col-4" th:with="today=${#temporals.format(#temporals.createNow(), T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        createdDate=${#temporals.format(candidateDisplayDto.createdDate, T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedDate=${#temporals.format(candidateDisplayDto.lastModifiedDate, T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)},
+                                        lastModifiedBy=${candidateDisplayDto.lastModifiedBy}">
+                            <div class="fst-italic fw-light">
+                                <div><span th:text="'Created on '
+                                            + (${today}==${createdDate} ? 'today' : ${createdDate})
+                                            + ', last updated by ' + *{lastModifiedBy} + ' ' + (${today}==${lastModifiedDate} ? 'today' : ${lastModifiedDate})"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <form method="post" class="card-body" style="background-color: #fff"
+                                  enctype="multipart/form-data"
+                                  th:object="${candidateDisplayDto}">
+                                <div class="row mb-3">
+                                    <div class="col-lg-8">
+                                        <h4 class="header-title">I. Personal information</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Full name <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span th:text="*{fullName}"></span></div>
+                                        </div>
+                                    </div>
+                                    <div class=" col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Email <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span th:text="*{email}"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>D.O.B </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${#strings.isEmpty(candidateDisplayDto.dob)}==true?'N/A':${#temporals.format(candidateDisplayDto.dob, T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Address </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${#strings.isEmpty(candidateDisplayDto.address)}==true?'N/A':*{address}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Phone number </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${#strings.isEmpty(candidateDisplayDto.phone)}==true?'N/A':*{phone}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group row">
+                                            <div class="col-lg-4 d-inline"><label>Gender <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline" th:text="*{gender.getDisplayValue()}"><span></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 mb-3">
+                                    <div class="col-lg-8">
+                                        <h4 class="header-title">II. Professional Information</h4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>CV Attachment </label></div>
+                                            <div class="col-lg-8 d-inline">
+                                                <span th:if="(${#strings.isEmpty(candidateDisplayDto.attachFile)})">N/A</span>
+                                                <a th:if="(!${#strings.isEmpty(candidateDisplayDto.attachFile)})"
+                                                   th:text="${#strings.arraySplit(candidateDisplayDto.attachFile, '/')[#arrays.length(#strings.arraySplit(candidateDisplayDto.attachFile, '/')) - 1]}"
+                                                   th:href="@{/files/{path}(path=${candidateDisplayDto.getAttachFile()})}"
+                                                   target="_blank"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Status <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{candidateStatus.getDisplayValue()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Position <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{candidatePosition.displayValue}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Year of experience </label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="${#strings.isEmpty(candidateDisplayDto.yearExperience)}==true?'N/A':*{yearExperience}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Skills <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline">
+                                                <button class="border rounded-3 me-1 d-inline-block px-2" disabled
+                                                        style="background-color:rgb(220, 215, 215); color: #000;"
+                                                        th:each="skill : *{getCandidateSkillSet()}"
+                                                        th:text="${skill.getSkill().getSkillName()}"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Highest Level <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{highestLevel.displayValue}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Recruiter <span
+                                                    class="text-danger">*</span></label></div>
+                                            <div class="col-lg-8 d-inline"><span
+                                                    th:text="*{recruiter.getFullName()}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-3 row">
+                                            <div class="col-lg-4 d-inline"><label>Note </label></div>
+                                            <div class="col-lg-8 d-inline note-view"><span style="white-space: pre-wrap"
+                                                    th:text="${#strings.isEmpty(candidateDisplayDto.note)}==true?'N/A':*{note}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center form-group mb-3">
+                                        <a th:if="!${#strings.equals(#authentication.getPrincipal().authorities[0], 'ROLE_INTERVIEWER')}"
+                                           th:href="@{/candidates/edit/{id}(id=${candidateDisplayDto.id})}"
+                                           class="btn btn-success btn-sm py-1 px-4 mr-3">Edit</a>
+                                        <a th:href="@{/candidates}"
+                                           class="btn btn-secondary btn-sm py-1 px-3">Go back</a>
+                                </div>
+                            </form> <!-- end card-body -->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<th:block th:insert="fragment/foot"/>
+
+</body>
+</html>

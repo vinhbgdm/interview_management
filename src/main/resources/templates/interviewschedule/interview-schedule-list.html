@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Interview Schedule List</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+    <style>
+        table th, td {
+            max-width: 50px;
+        }
+    </style>
+</head>
+<body class="loading">
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-8">
+                        <div class="page-title-box">
+                            <h4 class="page-title pt-1 lh-lg">Interview Schedule</h4>
+                            <div class="page-title-left">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/interviews}">Interview Schedule</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Interview Schedule List</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 d-flex flex-column justify-content-center">
+                        <th:block th:if="${messageSuccess}">
+                            <div class="alert alert-success message" id="success-alert-job" role="alert"
+                                 th:text="#{${messageSuccess}}">
+                            </div>
+                        </th:block>
+                        <th:block th:if="${messageUpdateSuccess}">
+                            <div class="alert alert-success message" role="alert"
+                                 th:text="#{${messageUpdateSuccess}}">
+                            </div>
+                        </th:block>
+                        <th:block th:if="${messageFail}">
+                            <div class="alert alert-danger message" id="failed-alert-job" role="alert"
+                                 th:text="#{${messageFail}}">
+                            </div>
+                        </th:block>
+                        <div th:if="${param.email}"
+                             th:classappend="${#strings.equals(param.email, 'success')}? 'alert-success' : 'alert-danger'"
+                             class="alert alert-dismissible fade show mt-3 message" role="alert">
+                            <span th:text="${#strings.equals(param.email, 'success')}? #{'Message.095'} : #{'Message.094'}"></span>
+                            <button type="button" class="close" data-dismiss="alert"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row"
+                     th:with="role = ${#strings.substring(
+                                       #authentication.getPrincipal().authorities, 1,
+                                       #strings.length(#authentication.getPrincipal().authorities)-1 )}">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="header-title">Interview Schedule List</h2>
+                                <div class="row">
+                                    <form th:action="@{/interviews}" class="nav col-10 mb-2" method="get"
+                                          id="search-form">
+                                        <div class="border-1 w-100 row">
+                                            <div class="col-5 ms-2">
+                                                <div class="input-group">
+                                                    <input name="searchKey" type="text" class="form-control"
+                                                           id="search-box"
+                                                           th:value="${searchKey}" placeholder="Search...">
+                                                </div>
+                                            </div>
+                                            <!--status-->
+                                            <div class="col-3 ">
+                                                <select name="status" class="custom-select h-100" id="status-box">
+                                                    <option th:selected="${status != null}" value="">Status</option>
+                                                    <th:block
+                                                            th:each="statusEnum : ${T(com.fa.ims.enums.InterviewScheduleStatus).values()}">
+                                                        <option th:text="${statusEnum.getDisplayValue()}"
+                                                                th:value="${statusEnum}"
+                                                                th:selected="${#strings.equalsIgnoreCase(statusEnum,status)}"></option>
+                                                    </th:block>
+                                                </select>
+                                            </div>
+                                            <button class="col-1 btn btn-info"  id="search-button" type="submit">Search
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="col-2 d-flex justify-content-center">
+                                        <a th:if="${!#strings.equals(role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER)}"
+                                           th:href="@{/interviews/create}" class="btn btn fas fa-plus-circle"
+                                           style="font-size: 20px"></a>
+                                    </div>
+                                </div>
+                                <!-- table List Job Content-->
+                                <table class="table table-hover dt-responsive nowrap w-100 mt-3">
+                                    <thead>
+                                    <tr>
+                                        <th class="col-2">Interview Title</th>
+                                        <th class="col-2">Candidate Name</th>
+                                        <th class="col-2 text-center">Job Title</th>
+                                        <th class="col-2 text-center">Schedule</th>
+                                        <th class="col-1 text-center">Status</th>
+                                        <th class="col-1 text-center">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="interview : ${contentPage.getContent()}">
+                                        <td class="col-2" >
+                                            <a th:href="@{/interviews/{id}(id=${interview.id})}"
+                                               th:text="${interview.title}" th:title="${interview.title}" class="title-hover-mc"></a>
+                                        </td>
+                                        <td class="col-2" th:text="${interview.candidateName}"></td>
+                                        <td class="col-2 px-0" th:text="${interview.jobTitle}"></td>
+                                        <td class="col-2 px-0 text-center">
+                                            <span th:text="${#temporals.format(interview.scheduleTimeFrom,
+                                                            T(com.fa.ims.constant.CommonConstants).FORMAT_DATE)}"></span>
+                                            <br>
+                                            <span th:text="${#temporals.format(interview.scheduleTimeFrom,
+                                                            T(com.fa.ims.constant.CommonConstants).FORMAT_TIME) + ' - ' +
+                                                             #temporals.format(interview.scheduleTimeTo,
+                                                             T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}"></span>
+                                        </td>
+                                        <td class="col-1 text-center" th:text="${interview.interviewStatus}"></td>
+                                        <td class="col-1 ">
+                                            <a th:if="${!#strings.equals(
+                                                    role, T(com.fa.ims.enums.UserRole).ROLE_INTERVIEWER )}"
+                                               th:href="@{/interviews/edit/{id}(id=${interview.id})}"
+                                               class="btn fas fa-edit p-1 ms-4" title="Edit"></a>
+                                            <!-- Button trigger modal  -->
+                                            <a th:if="${#strings.contains(interview.interviewStatus,
+                                            T(com.fa.ims.enums.InterviewScheduleStatus).OPEN.getDisplayValue()) ||
+                                            #strings.contains(interview.interviewStatus,
+                                            T(com.fa.ims.enums.InterviewScheduleStatus).INVITED.getDisplayValue())}"
+                                               data-th-id="1"
+                                               th:attr="data-bs-target=${'#exampleModal'+ interview.id} "
+                                               type="button" class="btn fa fa-envelope-o p-1 text-info"
+                                               data-bs-toggle="modal">
+                                            </a>
+                                            <!-- Modal -->
+                                            <div class="modal fade bg-light.bg-gradient"
+                                                 th:attr="id=${'exampleModal'+ interview.id}"
+                                                 tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content bg-light.bg-gradient">
+                                                        <div class="text-center p-3">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Are you
+                                                                certain that you want to send this email for candidate?
+                                                            </h5>
+                                                        </div>
+                                                        <div class="pb-3 d-flex justify-content-center">
+                                                            <button th:attr="onclick=|sendEmailToCandidate(${interview.id})|"
+                                                                    type="button" class="btn btn-info px-4 me-4">YES
+                                                            </button>
+                                                            <button type="button" class="btn btn-secondary px-4"
+                                                                    data-bs-dismiss="modal">NO
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <h4 th:if="${contentPage.isEmpty()}" th:text="#{message.interview.empty.list}"
+                                    class="text-center"></h4>
+                                <!--    paging-->
+                                <th:block th:insert="fragment/pagination"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Page content -->
+<!-- ============================================================== -->
+</div>
+<th:block th:insert="fragment/foot"/>
+<script>
+    $(document).ready(function () {
+        $(".message").delay(6000).fadeOut(200, function () {
+            $(this).alert('close');
+        });
+    });
+    function sendEmailToCandidate(id) {
+        $.ajax({
+            method: 'GET',
+            url: `${CONTEXT_PATH}api/interviews/email/` + id,
+            beforeSend(request) {
+                request.setRequestHeader(header, token);
+            }
+        }).done(function () {
+            location.href = `${CONTEXT_PATH}interviews?email=success`;
+        }).fail(function () {
+            location.href = `${CONTEXT_PATH}interviews?email=fail`;
+        });
+    }
+</script>
+</body>
+</html>

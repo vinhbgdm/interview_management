@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Edit User</title>
+    <th:block th:insert="fragment/head"/>
+    <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+</head>
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+    <!-- TopNavbar Start -->
+    <th:block th:insert="fragment/top-navbar"/>
+    <!-- TopNavbar End-->
+    <!-- Left Sidebar Start -->
+    <th:block th:insert="fragment/sidebar"/>
+    <!-- Left Sidebar End -->
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+    <div class="content-page">
+        <div class="content common-font-size-mc">
+            <!-- Start Content-->
+            <div class="container-fluid">
+                <!-- start page title -->
+                <div class="row">
+                    <div class="col-8">
+                        <div class="page-title-box">
+                            <h4 class="page-title pt-1 lh-lg">User</h4>
+                            <div class="page-title-left">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/candidates}">User</a></li>
+                                    <li class="breadcrumb-item active">Edit user</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-2" style="background-color: #fff;">
+                            <div class="card-body">
+                                <form method="post"
+                                      th:object="${userParamDto}"
+                                      th:action="@{/admin/users/edit/{userId}(userId=${userParamDto.id})}">
+                                    <div class="row">
+                                        <input th:field="*{id}" type="hidden">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Full name <span class="text-danger">*</span></label>
+                                                <input th:field="*{fullName}" type="text" class="form-control"
+                                                       placeholder="Type a name...">
+                                                <span class="text-danger" th:errors="*{fullName}"></span>
+                                            </div>
+                                        </div>
+                                        <div class=" col-lg-6">
+                                            <div class="form-group">
+                                                <label>Email <span
+                                                        class="text-danger">*</span></label>
+                                                <input class="form-control" type="text" th:field="*{email}"
+                                                       th:readonly="${userParamDto.email}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class=" row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>D.O.B</label>
+                                                <input th:field="*{dob}" type="text"
+                                                       class="form-control"
+                                                       th:placeholder="${T(com.fa.ims.constant.CommonConstants).FORMAT_DATE}">
+                                                <span class="text-danger" th:errors="*{dob}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Address</label>
+                                                <input th:field="*{address}" type="text" class="form-control"
+                                                       placeholder="Type an address...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Phone number <span class="text-danger">*</span></label>
+                                                <input th:field="*{phone}" type="text" class="form-control"
+                                                       placeholder="Type an phone number..."
+                                                       th:readonly="${userParamDto.email}">
+                                                <span class="text-danger" th:errors="*{phone}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>Gender <span class="text-danger">*</span></label> <br/>
+                                                <select th:field="*{gender}" class="form-control select-similar">>
+                                                    <option value=""
+                                                            data-display="Select"
+                                                            th:text="'Select a gender'">
+                                                    </option>
+                                                    <option th:each="genderEnum : ${T(com.fa.ims.enums.Gender).values()}"
+                                                            th:value="${genderEnum}"
+                                                            th:text="${genderEnum.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{gender}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-3">
+                                                <label>Role <span class="text-danger">*</span></label>
+                                                <select th:field="*{userRole}" class="form-control select-similar">
+                                                    <option value="" data-display="Select"
+                                                            th:text="'Select a role'">
+                                                    </option>
+                                                    <option th:each="role : ${T(com.fa.ims.enums.UserRole).values()}"
+                                                            th:value="${role}"
+                                                            th:text="${role.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{userRole}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-3">
+                                                <label>Department <span class="text-danger">*</span></label>
+                                                <select th:field="*{department}" class="form-control select-similar">
+                                                    <option value="" data-display="Select"
+                                                            th:text="'Select a department'">
+                                                    </option>
+                                                    <option th:each="department : ${T(com.fa.ims.enums.Department).values()}"
+                                                            th:value="${department}"
+                                                            th:text="${department.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{department}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-3">
+                                                <label>Status <span class="text-danger">*</span></label>
+                                                <select th:field="*{userStatus}" class="form-control select-similar">
+                                                    <option value="" data-display="Select"
+                                                            th:text="'Select a status'">
+                                                    </option>
+                                                    <option th:each="status : ${T(com.fa.ims.enums.UserStatus).values()}"
+                                                            th:value="${status}"
+                                                            th:text="${status.getDisplayValue()}">
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger" th:errors="*{userStatus}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group mb-3">
+                                                <label>Note</label>
+                                                <textarea th:field="*{note}" rows="1" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center form-group my-3">
+                                        <div class="text-center form-group mb-3">
+                                            <button type="submit" class="btn btn-info btn-sm mr-3 py-1 px-3">Submit
+                                            </button>
+                                            <a th:href="@{/admin/users}" class="btn btn-secondary btn-sm py-1 px-3">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form> <!-- end card-body -->
+                            </div>
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div> <!-- container -->
+        </div> <!-- content -->
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Page content -->
+    <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+<th:block th:insert="fragment/foot"/>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#dob').flatpickr({
+            altInput: true,
+            altFormat: "d-m-Y",
+            dateFormat: "d-m-Y"
+        });
+        let $select = $(".select-similar").selectize();
+    })
+</script>
+</body>
+</html>

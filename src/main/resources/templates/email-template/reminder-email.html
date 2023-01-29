@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Email</title>
+  <style>
+    * {
+      font-size: 15px;
+      color: #0a0a0a;
+    }
+  </style>
+</head>
+<body>
+<p>
+  This email is from IMS system,
+</p>
+<p>
+  <span> You have an interview schedule <b>TODAY</b> at </span>
+  <span style="font-weight: bold" th:text="${#temporals.format(interviewScheduleTaskDto.getScheduleTimeFrom(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}
+              + ' to '  + ${#temporals.format(interviewScheduleTaskDto.getScheduleTimeTo(),
+                                                      T(com.fa.ims.constant.CommonConstants).FORMAT_TIME)}"></span>
+</p>
+<p>
+  With Candidate <span style="font-weight: bold" th:text="${interviewScheduleTaskDto.candidate.fullName}"> </span>
+  position <span style="font-weight: bold" th:text="${interviewScheduleTaskDto.candidate.candidatePosition.displayValue}"></span> ,
+  the CV is attached with this no-reply-email
+</p>
+<p>
+  If anything wrong, please refer
+  recruiter @<span style="font-weight: bold" th:text="${interviewScheduleTaskDto.recruiterOwnerName}"> </span>
+  or visit our website
+  <a th:href="${contextPath} + '/interviews'" th:target="_blank"
+     style="text-decoration: none ">IMS.com</a>
+</p>
+<p>
+  <span> Please join interview room ID: </span>
+  <a th:href="@{*{interviewScheduleTaskDto.meetingId}}" th:target="_blank"
+     th:text="*{interviewScheduleTaskDto.meetingId}"
+     style="text-decoration: underline"></a>
+</p>
+<p>
+  -----<br>
+  <b><i>Thanks & Regards!</i></b>
+  <br><br>
+  <b>IMS Team</b>
+</p>
+</body>
+</html>

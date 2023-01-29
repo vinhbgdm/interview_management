@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8"/>
+  <title>Update Offer</title>
+  <th:block th:insert="fragment/head"/>
+  <link th:href="@{/css/custom-select2-selectize.css}" rel="stylesheet">
+
+</head>
+
+<body class="loading">
+<!-- Begin page -->
+<div id="wrapper">
+  <!-- TopNavbar Start -->
+  <th:block th:insert="fragment/top-navbar"/>
+  <!-- TopNavbar End-->
+
+  <!-- Left Sidebar Start -->
+  <th:block th:insert="fragment/sidebar"/>
+  <!-- Left Sidebar End -->
+
+  <!-- ============================================================== -->
+  <!-- Start Page Content here -->
+  <!-- ============================================================== -->
+  <div class="content-page common-font-size-mc">
+    <div class="content">
+      <!-- Start Content-->
+      <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+          <div class="col-8">
+            <div class="page-title-box">
+              <h4 class="page-title pt-1 lh-lg">Offer</h4>
+              <div class="page-title-left">
+                <ol class="breadcrumb m-0">
+                  <li class="breadcrumb-item"><a th:href="@{/offers}">Offer List</a></li>
+                  <li class="breadcrumb-item active">Update Offer</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- show notification -->
+          <div class="col-4 d-flex flex-column justify-content-center">
+            <div th:if="${param.cancel}"
+                 th:classappend="${#strings.equals(param.cancel, 'done')}? 'alert-success' : 'alert-danger'"
+                 class="alert alert-dismissible fade show mt-3 message" role="alert">
+              <span th:text="${#strings.equals(param.cancel, 'done')}? #{'message.0032'} : #{'message.0033'}"></span>
+              <button type="button" class="close" data-dismiss="alert"
+                      aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- end page title -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card mb-2" style="background-color: #fff">
+              <div class="card-body">
+                <form method="post"
+                      th:object="${offerParamDto}"
+                      th:action="@{/offers/edit/{offerId}(offerId=${offerParamDto.id})}">
+                  <input type="hidden" th:field="*{id}">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Candidate <span class="text-danger">*</span></label>
+                        <select th:field="*{candidateId}" class="form-control">
+                          <option value="" data-display="Select"
+                                  th:text="'Select candidate name'">
+                          </option>
+                          <option th:each="candidateItem : ${candidateList}"
+                                  th:selected="${candidateItem.id} == *{candidateId}"
+                                  th:value="${candidateItem.id}"
+                                  th:text="${candidateItem.fullName}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{candidateId}"></span>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Department <span class="text-danger">*</span></label>
+                        <select th:field="*{department}" class="form-control select-similar">
+                          <option value="" data-display="Select"
+                                  th:text="'Select a department'">
+                          </option>
+                          <option th:each="department : ${T(com.fa.ims.enums.Department).values()}"
+                                  th:value="${department}"
+                                  th:text="${department.getDisplayValue()}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{department}"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Interview Schedule</label>
+                        <select th:field="*{interviewScheduleId}" class="form-control">
+                          <option value="" data-display="Select"
+                                  th:text="'Select Interview Schedule'">
+                          </option>
+                          <option th:if="!${interviewList.isEmpty()}"
+                                  th:each="interviewSchedule : ${interviewList}"
+                                  th:selected="${interviewSchedule.id} == *{interviewScheduleId}"
+                                  th:value="${interviewSchedule.id}"
+                                  th:text="${interviewSchedule.title}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{interviewScheduleId}"></span>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Position <span class="text-danger">*</span></label>
+                        <select th:field="*{position}" class="form-control select-similar">
+                          <option value="" data-display="Select"
+                                  th:text="'Select a position'">
+                          </option>
+                          <option th:each="position : ${T(com.fa.ims.enums.CandidatePosition).values()}"
+                                  th:value="${position}"
+                                  th:text="${position.getDisplayValue()}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{position}"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Recruiter owner <span class="text-danger">*</span></label>
+                        <br/>
+                        <select th:field="*{recruiterId}" class="form-control"
+                                data-toggle="select2">
+                          <option value="">Choose Recruiter to assign</option>
+                          <option th:each="recruiter : ${recruiterList}"
+                                  th:value="${recruiter.getId()}"
+                                  th:selected="${recruiter.id} == *{recruiterId}"
+                                  th:text="${recruiter.fullName} + ' - ' + ${recruiter.getUsername()}"></option>
+                        </select>
+                        <span class="text-danger" th:errors="*{recruiterId}"></span>
+                        <div class="mt-1">
+                          <th:block th:each="recruiter : ${recruiterList}">
+                            <a th:if="${recruiter.username}==${#authentication.getPrincipal().getUsername()}"
+                               href="javascript:void(0)"
+                               th:attr="onclick=|assignMe(${recruiter.id})|"
+                               class="text-primary ml-2"
+                               style="text-decoration: underline">Assign
+                              me</a>
+                          </th:block>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Level <span class="text-danger">*</span></label>
+                        <select th:field="*{offerLevel}" class="form-control select-similar">
+                          <option value="" data-display="Select" th:text="'Select a level'">
+                          </option>
+                          <option th:each="level : ${T(com.fa.ims.enums.OfferLevel).values()}"
+                                  th:value="${level}"
+                                  th:text="${level.getDisplayValue()}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{offerLevel}"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Approved by <span class="text-danger">*</span></label>
+                        <select th:field="*{approvedBy}" class="form-control select-similar">
+                          <option value="" data-display="Select"
+                                  th:text="'Select a approved'">
+                          </option>
+                          <option th:each="manager : ${managerList}"
+                                  th:value="${manager.id}"
+                                  th:selected="${manager.id} == *{approvedBy}"
+                                  th:text="${manager.fullName} + ' - ' + ${manager.username}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{approvedBy}"></span>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Contract type <span class="text-danger">*</span></label>
+                        <select th:field="*{contractType}" class="form-control select-similar">
+                          <option value="" data-display="Select"
+                                  th:text="'Select a type or contract'">
+                          </option>
+                          <option th:each="contractType : ${T(com.fa.ims.enums.ContractType).values()}"
+                                  th:value="${contractType}"
+                                  th:text="${contractType.getDisplayValue()}">
+                          </option>
+                        </select>
+                        <span class="text-danger" th:errors="*{contractType}"></span>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-0">
+                        <label>Offer Notes</label>
+                        <textarea th:field="*{note}" rows="1" class="form-control"></textarea>
+                        <span class="text-danger" th:errors="*{note}"></span>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Due Date <span class="text-danger">*</span></label>
+                        <input th:field="*{dueDate}" type="text"
+                               th:placeholder="${T(com.fa.ims.constant.CommonConstants).FORMAT_DATE}"
+                               class="form-control">
+                        <span class="text-danger" th:errors="*{dueDate}"></span>
+
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Status <span class="text-danger">*</span></label>
+                          <select th:field="*{offerStatus}" class="form-control select-similar">>
+                            <option th:each="offerStatusEnum : ${T(com.fa.ims.enums.OfferStatus).values()}"
+                                    th:value="${offerStatusEnum}"
+                                    th:selected="${offerStatusEnum} == *{offerStatus}"
+                                    th:text="${offerStatusEnum.getDisplayValue()}">
+                            </option>
+                          </select>
+                          <span class="text-danger" th:errors="*{offerStatus}"></span>
+
+                      </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Contract start <span class="text-danger">*</span></label><br>
+                        <div class="d-flex justify-content-between">
+                          <div class="col-6 ps-1">
+                            <input type="text" class="form-control" th:field="*{contractFrom}"
+                                   value=""
+                                   placeholder="From">
+                            <span class="text-danger" th:errors="*{contractFrom}"></span>
+                          </div>
+                          <div class="col-6 pe-1">
+                            <input type="text" class="form-control" th:field="*{contractTo}"
+                                   value=""
+                                   placeholder="To (*)">
+                            <span class="text-danger" th:errors="*{contractTo}"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Interviewer </label> <br>
+                        <div id="interviewer" class="col-lg-9 d-inline">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <label>Basic salary <span class="text-danger">*</span></label>
+                        <input th:field="*{basicSalary}" type="text" class="form-control"
+                               placeholder="Basic salary...">
+                        <span class="text-danger" th:errors="*{basicSalary}"></span>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group mb-3">
+                        <div class="d-inline"><label>Interview notes </label></div>
+                        <br>
+                        <div class="d-inline">
+                          <div class="note-view" id="interview-schedule-note">
+                            <!--                                                         th:each="interview : ${interviewList}"-->
+                          </div>
+                          <!--                                                    th:text="${offerCreateFormDto.interviewScheduleId==interview.id}?${interview.note}:''"-->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Button trigger modal  -->
+<!--                  <a-->
+<!--                     data-th-id="1" id="aaa"-->
+<!--                     th:attr="data-bs-target=${'#exampleModal'} "-->
+<!--                     type="button" class="btn fas fa-trash-alt p-1 text-danger"-->
+<!--                     data-bs-toggle="modal">-->
+<!--                  </a>-->
+<!--                  -->
+                  <!-- Modal -->
+                  <div class="modal fade bg-light.bg-gradient"
+                       id="exampleModal"
+                       tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content bg-light.bg-gradient">
+                        <div class="text-center p-3">
+                          <h5 class="modal-title" id="exampleModalLabel">Sure you want to cancel this offer?</h5>
+                        </div>
+
+                        <div class="pb-3 d-flex justify-content-center">
+                          <button th:attr="onclick=|cancelOffer(${offerParamDto.id})|"
+                                  type="button" class="btn btn-success px-4 me-4">YES
+                          </button>
+                          <button type="button" class="btn btn-secondary px-4"
+                                  data-bs-dismiss="modal">NO
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-center form-group my-3">
+                    <div class="text-center form-group mb-3">
+                      <button type="submit" class="btn btn-success btn-sm mr-3 py-1 px-3">Submit
+                      </button>
+                      <a th:href="@{/offers}" id="cancel"
+                         class="btn btn-secondary btn-sm py-1 px-3">Cancel</a>
+                    </div>
+                  </div>
+                </form>
+              </div> <!-- end card-body -->
+            </div> <!-- end card-->
+          </div> <!-- end col -->
+        </div>
+        <!-- end row -->
+      </div> <!-- container -->
+    </div> <!-- content -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Page content -->
+  <!-- ============================================================== -->
+</div>
+<!-- END wrapper -->
+<th:block th:insert="fragment/foot"/>
+
+<script th:inline="javascript">
+
+  $(document).ready(function () {
+    $('#interviewer').parent().hide();
+    $('#interview-schedule-note').parent().parent().hide();
+
+    $('#dueDate, #contractFrom, #contractTo').flatpickr({
+      altInput: true,
+      altFormat: "d-m-Y",
+      dateFormat: "d-m-Y"
+    });
+    setTimeout(function () {
+      $(".message").fadeOut("slow");
+    }, 5000);
+
+    let interviewScheduleList;
+    let interviewSchedule = $('#interviewScheduleId').selectize({
+      onInitialize: function () {
+        // alert($('#interviewScheduleId').selectize.getValue())
+        let value = this.getValue();
+        $.ajax({
+          method: 'GET',
+          url: `${CONTEXT_PATH}api/interview/` + value,
+          beforeSend(request) {
+            request.setRequestHeader(header, token);
+          }
+        }).done(function (content) {
+
+          console.log(content.note)
+          $('#interviewer').parent().show();
+          $('#interview-schedule-note').parent().parent().show();
+          $('#interview-schedule-note').text(content.note)
+          $.each(content.listInterviewer, (index, interviewer) => {
+            $('#interviewer').append(`<button class="border rounded-3 me-1 d-inline-block px-2" disabled
+                                                        style="background-color:rgb(220, 215, 215); color: #000;">
+                                                        ${interviewer.username}</button>`)
+          });
+        });
+      },
+
+      onChange: function (value) {
+        $('#interviewer').parent().hide();
+        $('#interview-schedule-note').parent().parent().hide();
+
+        $.ajax({
+          method: 'GET',
+          url: `${CONTEXT_PATH}api/interview/` + value,
+          beforeSend(request) {
+            request.setRequestHeader(header, token);
+          }
+        }).done(function (content) {
+          $('#interviewer').empty();
+          $('#interview-schedule-note').empty();
+
+          $('#interviewer').parent().show();
+          $('#interview-schedule-note').parent().parent().show();
+          $('#interview-schedule-note').text(content.note)
+          $.each(content.listInterviewer, (index, interviewer) => {
+            $('#interviewer').append(`<button class="border rounded-3 me-1 d-inline-block px-2" disabled
+                                                        style="background-color:rgb(220, 215, 215); color: #000;">
+                                                        ${interviewer.username}</button>`)
+          });
+        });
+      }
+    });
+    // interviewSchedule[0].selectize.disable();
+
+    $('#candidateId').selectize({
+      onInitialize: function () {
+        let value = this.getValue();
+        $.ajax({
+          method: 'GET',
+          url: `${CONTEXT_PATH}api/candidates/` + value + `/schedule-interview`,
+          beforeSend(request) {
+            request.setRequestHeader(header, token);
+          }
+        }).done(function (contentList) {
+          interviewScheduleList = contentList;
+          $.each(contentList, (index, is) => {
+            interviewSchedule[0].selectize.addOption({
+              value: is.id,
+              text: is.title
+            });
+          })
+        });
+
+        // this.trigger('change', this.getValue(), true);
+      },
+      onChange: function (value) {
+        interviewSchedule[0].selectize.enable();
+        interviewSchedule[0].selectize.clear();
+        interviewSchedule[0].selectize.clearOptions();
+
+        $.ajax({
+          method: 'GET',
+          url: `${CONTEXT_PATH}api/candidates/` + value + `/recruiter`,
+          beforeSend(request) {
+            request.setRequestHeader(header, token);
+          }
+        }).done(function (content) {
+          let opt = $('#recruiterId').children("option[value=" + content.id + "]");
+          opt.attr('selected', 'selected');
+          $('#select2-recruiterId-container').text(opt.text());
+        });
+
+        $.ajax({
+          method: 'GET',
+          url: `${CONTEXT_PATH}api/candidates/` + value + `/schedule-interview`,
+          beforeSend(request) {
+            request.setRequestHeader(header, token);
+          }
+        }).done(function (contentList) {
+          interviewScheduleList = contentList;
+          $.each(contentList, (index, is) => {
+            interviewSchedule[0].selectize.addOption({
+              value: is.id,
+              text: is.title
+            });
+          })
+        });
+      }
+    });
+
+
+    let $select = $(".select-similar").selectize();
+
+  })
+
+  $('#offerStatus').on('change', function() {;
+    let value =this.value;
+    if (value === 'CANCELLED_OFFER') {
+      $('#exampleModal').modal('show');
+    }
+  });
+
+  function cancelOffer(id) {
+    $.ajax({
+      method: 'GET',
+      url: `${CONTEXT_PATH}api/offers/` + id ,
+      beforeSend(request) {
+        request.setRequestHeader(header, token);
+      }
+    }).done(function () {
+      location.href = `${CONTEXT_PATH}offers/edit/` + id + `?cancel=done`;
+    }).fail(function () {
+      location.href = `${CONTEXT_PATH}offers/edit/` + id + `?cancel=fail`;
+    });
+
+  }
+
+  function assignMe(id) {
+    let opt = $('#recruiterId').children("option[value=" + id + "]");
+    opt.attr('selected', 'selected');
+    $('#select2-recruiterId-container').text(opt.text());
+  }
+
+
+</script>
+
+</body>
+
+</html>
